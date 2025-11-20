@@ -1,29 +1,115 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="styles.css">
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pawmart – Sign Up</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
 
+<body class="background">
+
+    <!-- Banner Section -->
     <header class="banner">
-        <img class="logo" src="images\pawmart.png" alt="Petmart Logo" class="logo">
-        <h1 class="banner-name">Welcome to Petmart!</h1>
+        <img class="logo" src="images/pawmart.png" alt="Pawmart Logo" />
+        <h1 class="banner-title">Welcome to Pawmart!</h1>
     </header>
 
+    <!-- Intro Text -->
+    <h2 class="intro">Create a new Pawmart account</h2>
 
+    <!-- Sign-Up Form Container -->
+    <div class="form">
+        <h3>Create Account</h3>
+        <p style="font-size: 13px; color:#555; margin-bottom: 15px;">
+            Enter your details below to get started with Petmart.
+        </p>
 
-    <body class="background">
-        
-        <h2 class="intro">Please input the following information to create a new account</h2>
-    </body>
+        <!-- FORM -->
+        <form id="signup-form">
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                required
+            />
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password (min 6 characters)"
+                required
+            />
+            <input
+                type="text"
+                id="securityAnswer"
+                placeholder="Security answer (e.g. your first pet’s name)"
+                required
+            />
 
-        <div class="form-container">
-    <h2>Sign up</h2>
-    <form>
-        <input type="email" placeholder="Email">
-        <input type="password" placeholder="Password">
-        <input type="security" placeholder="Security Question">
-        <button type="submit">Sign Up</button>
-    </form>
-</div>
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <!-- MESSAGE AREA -->
+        <p id="signup-message"></p>
+
+        <p style="margin-top: 15px;">
+            Already have an account?
+            <a href="sign-in.html" style="color:#3d43e1; font-weight:bold;">Sign In</a>
+        </p>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const signupForm = document.getElementById("signup-form");
+        const messageEl = document.getElementById("signup-message");
+
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const securityAnswer = document.getElementById("securityAnswer").value.trim();
+
+            if (!email || !password || !securityAnswer) {
+                messageEl.textContent = "Please fill all fields.";
+                messageEl.style.color = "red";
+                return;
+            }
+
+            if (password.length < 6) {
+                messageEl.textContent = "Password must be at least 6 characters.";
+                messageEl.style.color = "red";
+                return;
+            }
+
+            const payload = { email, password, securityAnswer };
+
+            try {
+                const res = await fetch("http://localhost:3000/api/users/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    messageEl.style.color = "green";
+                    messageEl.textContent = "Account created successfully! Redirecting…";
+
+                    setTimeout(() => {
+                        window.location.href = "sign-in.html";
+                    }, 1500);
+                } else {
+                    messageEl.style.color = "red";
+                    messageEl.textContent = data.error || "Registration failed.";
+                }
+            } catch (error) {
+                console.error(error);
+                messageEl.style.color = "red";
+                messageEl.textContent = "Server error. Try again later.";
+            }
+        });
+    </script>
+
+</body>
 </html>
-
-

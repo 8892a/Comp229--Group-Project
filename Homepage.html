@@ -1,19 +1,67 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="styles.css">
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pawmart – Home</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
 
+<body class="background">
+    <!-- Banner -->
     <header class="banner">
-        <img class="logo" src="images\pawmart.png" alt="Petmart Logo" class="logo">
-        <h1 class="banner-name">Welcome to Petmart!</h1>
+        <img class="logo" src="images/pawmart.png" alt="Pawmart Logo" />
+        <h1 class="banner-title">Welcome to Pawmart!</h1>
     </header>
 
+    <!-- Main content -->
+    <main class="home-wrapper">
 
+        <!-- Intro section -->
+        <section class="home-hero">
+            <h2 class="home-title">Your One-Stop Hub for Pet Lovers</h2>
+            <p class="home-subtitle">
+                Manage your account, keep your pet’s info safe, and explore all that Pawmart has to offer.
+            </p>
 
-    <body class="background">
-        
-        <h2 class="intro">Homepage</h2>
-</div>
+            <div class="home-actions">
+                <a href="sign-in.html" class="home-btn primary">Go to Sign In</a>
+                <a href="sign-up.html" class="home-btn secondary">Create an Account</a>
+            </div>
+
+            <p id="home-status" class="home-status"></p>
+        </section>
+
+        <!-- Features section -->
+        <section class="home-features">
+            <div class="feature-card">
+                <h3>Secure Login</h3>
+                <p>Your account is protected with encrypted passwords and secure tokens.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Easy Access</h3>
+                <p>Sign in from anywhere to manage your profile and your pet's information.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Fast Recovery</h3>
+                <p>Forgot your password? Use your security answer to reset it in seconds.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Simple script to show login status -->
+    <script>
+        const statusEl = document.getElementById("home-status");
+        const token = localStorage.getItem("token");
+
+        if (statusEl) {
+            if (token) {
+                statusEl.textContent = "You are logged in. Enjoy exploring Petmart!";
+                statusEl.style.color = "green";
+            } else {
+                statusEl.textContent = "You are not logged in yet. Sign in or create an account to continue.";
+                statusEl.style.color = "#3d43e1";
+            }
+        }
+    </script>
+</body>
 </html>
-
-

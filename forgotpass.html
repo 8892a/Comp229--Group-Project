@@ -1,28 +1,132 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="styles.css">
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pawmart – Reset Password</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
 
+<body class="background">
+    <!-- Banner -->
     <header class="banner">
-        <img class="logo" src="images\pawmart.png" alt="Petmart Logo" class="logo">
-        <h1 class="banner-name">Welcome to Petmart!</h1>
+        <img class="logo" src="images/pawmart.png" alt="Pawmart Logo" />
+        <h1 class="banner-title">Welcome to Pawmart!</h1>
     </header>
 
+    <!-- Intro text -->
+    <h2 class="intro">
+        Forgot your password? No problem! <br />
+        Enter your email, security answer, and a new password to reset it.
+    </h2>
 
+    <!-- Reset Password Form -->
+    <div class="form">
+        <h3>Reset Password</h3>
 
-    <body class="background">
-        
-        <h2 class="intro">Forgot Password? No problem! Please input the email associated with your account and security question to continue</h2>
-    </body>
+        <form id="reset-form">
+            <input
+                type="email"
+                id="email"
+                placeholder="Email address"
+                required
+            />
+            <input
+                type="text"
+                id="securityAnswer"
+                placeholder="Security answer"
+                required
+            />
+            <input
+                type="password"
+                id="newPassword"
+                placeholder="New password"
+                required
+            />
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm new password"
+                required
+            />
 
-        <div class="form-container">
-        <h2>Change Password</h2>
-        <form>
-        <input type="email" placeholder="Email">
-        <input type="security" placeholder="Security Question">
-        <button type="submit">Change Password</button>
-    </form>
-</div>
+            <button type="submit">Change Password</button>
+        </form>
+
+        <!-- Message area -->
+        <p id="reset-message"></p>
+
+        <p style="margin-top: 15px;">
+            Remembered your password?
+            <a href="sign-in.html" style="color:#3d43e1; font-weight:bold;">Back to Sign In</a>
+        </p>
+    </div>
+
+    <!-- RESET PASSWORD LOGIC -->
+    <script>
+        const resetForm = document.getElementById("reset-form");
+        const resetMessage = document.getElementById("reset-message");
+
+        resetForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const securityAnswer = document.getElementById("securityAnswer").value.trim();
+            const newPassword = document.getElementById("newPassword").value.trim();
+            const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+            // Basic validation
+            if (!email || !securityAnswer || !newPassword || !confirmPassword) {
+                resetMessage.textContent = "Please fill in all fields.";
+                resetMessage.style.color = "red";
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                resetMessage.textContent = "New password must be at least 6 characters.";
+                resetMessage.style.color = "red";
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                resetMessage.textContent = "Passwords do not match.";
+                resetMessage.style.color = "red";
+                return;
+            }
+
+            const payload = {
+                email,
+                securityAnswer,
+                newPassword
+            };
+
+            try {
+                const res = await fetch("http://localhost:3000/api/users/reset", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    resetMessage.textContent = "Password reset successful! Redirecting to sign in…";
+                    resetMessage.style.color = "green";
+
+                    setTimeout(() => {
+                        window.location.href = "sign-in.html";
+                    }, 1500);
+                } else {
+                    resetMessage.textContent = data.error || "Password reset failed.";
+                    resetMessage.style.color = "red";
+                }
+            } catch (error) {
+                console.error(error);
+                resetMessage.textContent = "Server error. Please try again.";
+                resetMessage.style.color = "red";
+            }
+        });
+    </script>
+</body>
 </html>
-
-
