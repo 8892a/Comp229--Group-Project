@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 export async function register(req, res) {
     try {
-        const { email, password, securityAnswer } = req.body;
+        const { email, password, securityAnswer, role } = req.body;  // role added
 
         const exists = await User.findOne({ email });
         if (exists) return res.status(400).json({ error: "User already exists" });
@@ -14,7 +14,8 @@ export async function register(req, res) {
         const user = await User.create({
             email,
             password: hashedPw,
-            securityAnswer
+            securityAnswer,
+            role: role || "customer"  // default role
         });
 
         res.json({ message: "User registered", user });
@@ -33,9 +34,16 @@ export async function login(req, res) {
         const matches = await bcrypt.compare(password, user.password);
         if (!matches) return res.status(400).json({ error: "Invalid credentials" });
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+        const token = jwt.sign(
+            { id: user._id, role: user.role },   // role added to token
+            process.env.JWT_SECRET
+        );
 
-        res.json({ message: "Login successful", token });
+        res.json({ 
+            message: "Login successful", 
+            token,
+            role: user.role    // frontend can use this
+        });
     } catch (error) {
         res.status(500).json({ error: "Server error" });
     }
