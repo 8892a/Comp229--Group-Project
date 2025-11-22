@@ -45,6 +45,12 @@
                 required
             />
 
+            <!-- NEW ROLE FIELD ADDED -->
+            <select id="role" required>
+                <option value="customer" selected>Customer</option>
+                <option value="admin">Admin</option>
+            </select>
+
             <button type="submit">Sign Up</button>
         </form>
 
@@ -68,6 +74,7 @@
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value.trim();
             const securityAnswer = document.getElementById("securityAnswer").value.trim();
+            const role = document.getElementById("role").value;  // NEW
 
             if (!email || !password || !securityAnswer) {
                 messageEl.textContent = "Please fill all fields.";
@@ -81,10 +88,10 @@
                 return;
             }
 
-            const payload = { email, password, securityAnswer };
+            const payload = { email, password, securityAnswer, role }; // UPDATED
 
             try {
-                const res = await fetch("http://localhost:3000/api/users/register", {
+                const res = await fetch("http://localhost:5000/api/users/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload),
@@ -98,7 +105,7 @@
 
                     setTimeout(() => {
                         window.location.href = "sign-in.html";
-                    }, 1500);
+                    }, 10000);
                 } else {
                     messageEl.style.color = "red";
                     messageEl.textContent = data.error || "Registration failed.";
